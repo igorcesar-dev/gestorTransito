@@ -3,6 +3,7 @@ package com.igor.api.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,7 @@ import com.igor.api.domain.ocorrencia.Ocorrencia;
 import com.igor.api.domain.ocorrencia.OcorrenciaRequestDTO;
 import com.igor.api.domain.ocorrencia.OcorrenciaSpecification;
 import com.igor.api.domain.tipoOcorrencia.TipoOcorrencia;
+import com.igor.api.domain.tipoOcorrencia.TipoOcorrenciaCountDTO;
 // import com.igor.api.domain.usuario.Usuario;
 import com.igor.api.repositories.OcorrenciaRepository;
 import com.igor.api.repositories.TipoOcorrenciaRepository;
@@ -35,6 +37,11 @@ public class OcorrenciaService {
 
     @Transactional
     public Ocorrencia createOcorrencia(OcorrenciaRequestDTO data) {
+        // Valida se a ocorrência ocorreu há mais de 2 dias
+        if (data.dataHora() != null && data.dataHora().isBefore(LocalDateTime.now().minusDays(2))) {
+            throw new IllegalArgumentException("Ocorrências não podem ser cadastradas se ocorreram há mais de 2 dias.");
+        }
+
         // Busca o TipoOcorrencia pelo ID
         TipoOcorrencia tipoOcorrencia = tipoOcorrenciaRepository.findById(data.tipoOcorrenciaId())
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -132,6 +139,16 @@ public class OcorrenciaService {
         }
 
         return ocorrenciaRepository.findAll(specification);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TipoOcorrenciaCountDTO> countOcorrenciasByTipoLast30Days() {
+        LocalDateTime dataInicio = LocalDateTime.now().minusDays(30);
+        List<Object[]> results = ocorrenciaRepository.countOcorrenciasByTipo(dataInicio);
+        
+        return results.stream()
+                .map(result -> new TipoOcorrenciaCountDTO((String) result[0], (Long) result[1]))
+                .toList();
     }
 
 }

@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.igor.api.domain.ocorrencia.Ocorrencia;
 import com.igor.api.domain.ocorrencia.OcorrenciaRequestDTO;
+import com.igor.api.domain.tipoOcorrencia.TipoOcorrencia;
+import com.igor.api.domain.tipoOcorrencia.TipoOcorrenciaCountDTO;
 import com.igor.api.service.OcorrenciaService;
 
 @RestController
@@ -62,4 +64,11 @@ public class OcorrenciaController {
                 palavraChave);
         return ResponseEntity.ok(ocorrencias);
     }
+
+    @GetMapping("/quantidade-ultimas-ocorrencias")
+    public ResponseEntity<List<TipoOcorrenciaCountDTO>> countOcorrenciasByTipo() {
+        List<TipoOcorrenciaCountDTO> counts = ocorrenciaService.countOcorrenciasByTipoLast30Days();
+        return ResponseEntity.ok(counts);
+    }
+
 }
