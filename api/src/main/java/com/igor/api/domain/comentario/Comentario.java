@@ -1,6 +1,6 @@
 package com.igor.api.domain.comentario;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 import com.igor.api.domain.ocorrencia.Ocorrencia;
 
@@ -19,7 +19,7 @@ public class Comentario {
     private Long id;
 
     private String comentario;
-    private Date dataHora;
+    private LocalDateTime dataHora;
 
     @ManyToOne
     @JoinColumn(name = "ocorrencia_id")

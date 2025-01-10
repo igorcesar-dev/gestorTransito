@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.igor.api.domain.ocorrencia.Ocorrencia;
+import com.igor.api.domain.ocorrencia.OcorrenciaComComentariosDTO;
 import com.igor.api.domain.ocorrencia.OcorrenciaRequestDTO;
-import com.igor.api.domain.tipoOcorrencia.TipoOcorrencia;
 import com.igor.api.domain.tipoOcorrencia.TipoOcorrenciaCountDTO;
 import com.igor.api.service.OcorrenciaService;
 
@@ -36,9 +36,15 @@ public class OcorrenciaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Ocorrencia>> getAllOcorrencias() {
-        List<Ocorrencia> ocorrencias = ocorrenciaService.findAllOcorrencias();
+    public ResponseEntity<List<OcorrenciaComComentariosDTO>> getAllOcorrencias() {
+        List<OcorrenciaComComentariosDTO> ocorrencias = ocorrenciaService.findAll();
         return ResponseEntity.ok(ocorrencias);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<OcorrenciaComComentariosDTO> getOcorrenciaWithComentarios(@PathVariable Long id) {
+        OcorrenciaComComentariosDTO ocorrencia = ocorrenciaService.findOcorrenciaWithComentariosById(id);
+        return ResponseEntity.ok(ocorrencia);
     }
 
     @PutMapping("/{id}")

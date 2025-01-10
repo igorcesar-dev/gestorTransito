@@ -2,13 +2,18 @@ package com.igor.api.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
+import com.igor.api.domain.comentario.ComentarioDTO;
 import com.igor.api.domain.ocorrencia.Ocorrencia;
+import com.igor.api.domain.ocorrencia.OcorrenciaComComentariosDTO;
 import com.igor.api.domain.ocorrencia.OcorrenciaRequestDTO;
 import com.igor.api.domain.ocorrencia.OcorrenciaSpecification;
 import com.igor.api.domain.tipoOcorrencia.TipoOcorrencia;
@@ -70,11 +75,40 @@ public class OcorrenciaService {
         return ocorrenciaRepository.save(newOcorrencia);
     }
 
-    // Busca todas ocorrências
-    @Transactional(readOnly = true)
-    public List<Ocorrencia> findAllOcorrencias() {
-        return ocorrenciaRepository.findAll();
+    private OcorrenciaComComentariosDTO toDto(Ocorrencia ocorrencia) {
+        return new OcorrenciaComComentariosDTO(
+                ocorrencia.getId(),
+                ocorrencia.getResumo(),
+                ocorrencia.getDescricao(),
+                ocorrencia.getDataHora(),
+                ocorrencia.getEndereco(),
+                ocorrencia.getLatitude(),
+                ocorrencia.getLongitude(),
+                ocorrencia.getTipoOcorrencia() != null ? ocorrencia.getTipoOcorrencia().getDescricao() : null,
+                ocorrencia.getComentarios().stream().map(comentario -> new ComentarioDTO(
+                        comentario.getId(),
+                        comentario.getComentario(),
+                        comentario.getDataHora())).toList());
     }
+
+    // Busca todas as ocorrências com comentários
+    @Transactional(readOnly = true)
+    public List<OcorrenciaComComentariosDTO> findAll() {
+        List<Ocorrencia> ocorrencias = ocorrenciaRepository.findAll(); // Isso vai buscar todas as ocorrências
+        return ocorrencias.stream()
+                .map(this::toDto) // Converter cada ocorrência para DTO com comentários
+                .collect(Collectors.toList());
+    }
+
+    // Busca uma ocorrência pelo id
+    @Transactional(readOnly = true)
+    public OcorrenciaComComentariosDTO findOcorrenciaWithComentariosById(Long id) {
+        Ocorrencia ocorrencia = ocorrenciaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Ocorrência não encontrada com ID: " + id));
+
+        return toDto(ocorrencia); // Converte a Ocorrencia em DTO com Comentários
+    }
+
 
     // Atualiza uma ocorrência pelo id
     public Ocorrencia updateOcorrencia(Long id, OcorrenciaRequestDTO data) {
@@ -145,7 +179,7 @@ public class OcorrenciaService {
     public List<TipoOcorrenciaCountDTO> countOcorrenciasByTipoLast30Days() {
         LocalDateTime dataInicio = LocalDateTime.now().minusDays(30);
         List<Object[]> results = ocorrenciaRepository.countOcorrenciasByTipo(dataInicio);
-        
+
         return results.stream()
                 .map(result -> new TipoOcorrenciaCountDTO((String) result[0], (Long) result[1]))
                 .toList();
