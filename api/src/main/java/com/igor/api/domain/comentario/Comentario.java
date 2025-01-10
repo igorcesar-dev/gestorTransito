@@ -1,14 +1,11 @@
 package com.igor.api.domain.comentario;
 
 import java.sql.Date;
-import java.util.UUID;
 
 import com.igor.api.domain.ocorrencia.Ocorrencia;
-import com.igor.api.domain.usuario.Usuario;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 
 @Entity
 @Table(name = "comentario")
@@ -18,17 +15,13 @@ import lombok.*;
 @NoArgsConstructor
 public class Comentario {
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String comentario;
     private Date dataHora;
-    
-    @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "ocorrencia_id", nullable = false)
+    @JoinColumn(name = "ocorrencia_id")
     private Ocorrencia ocorrencia;
 }

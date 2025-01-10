@@ -5,23 +5,22 @@ import java.util.*;
 
 import com.igor.api.domain.comentario.Comentario;
 import com.igor.api.domain.tipoOcorrencia.TipoOcorrencia;
-import com.igor.api.domain.usuario.Usuario;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 
 @Entity
-@Table(name = "comentario")
+@Table(name = "ocorrencia")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Ocorrencia {
+    
     @Id
-    @GeneratedValue
-    private UUID id;
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String resumo;
     private String descricao;
     private Date dataHora;
@@ -31,12 +30,5 @@ public class Ocorrencia {
 
     @ManyToOne
     @JoinColumn(name = "tipo_ocorrencia_id", nullable = false)
-    private TipoOcorrencia tipoOcorrencia;
-
-    @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario;
-
-    @OneToMany(mappedBy = "ocorrencia")
-    private List<Comentario> comentarios;
+    private TipoOcorrencia tipoOcorrencia;  
 }

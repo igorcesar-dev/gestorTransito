@@ -1,10 +1,5 @@
 package com.igor.api.domain.tipoOcorrencia;
 
-import java.util.List;
-import java.util.UUID;
-
-import com.igor.api.domain.ocorrencia.Ocorrencia;
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,11 +11,8 @@ import lombok.*;
 @AllArgsConstructor
 public class TipoOcorrencia {
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String descricao;
-
-    @OneToMany(mappedBy = "tipoOcorrencia")
-    private List<Ocorrencia> ocorrencias;
 }
