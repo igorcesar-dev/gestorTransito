@@ -1,9 +1,7 @@
 package com.igor.api.domain.ocorrencia;
 
-import java.sql.Date;
-import java.util.*;
+import java.time.LocalDateTime;
 
-import com.igor.api.domain.comentario.Comentario;
 import com.igor.api.domain.tipoOcorrencia.TipoOcorrencia;
 
 import jakarta.persistence.*;
@@ -23,7 +21,7 @@ public class Ocorrencia {
     private Long id;
     private String resumo;
     private String descricao;
-    private Date dataHora;
+    private LocalDateTime dataHora;
     private String endereco;
     private Double latitude;
     private Double longitude;

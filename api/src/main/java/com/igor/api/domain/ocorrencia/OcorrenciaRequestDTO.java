@@ -1,11 +1,11 @@
 package com.igor.api.domain.ocorrencia;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 public record OcorrenciaRequestDTO(
         String resumo,
         String descricao,
-        Date dataHora,
+        LocalDateTime dataHora,
         String endereco,
         Double latitude,
         Double longitude,
