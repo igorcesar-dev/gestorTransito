@@ -1,4 +1,4 @@
-package com.igor.api.domain.ocorrencia;
+package com.igor.api.application.dto.ocorrencia;
 
 import java.time.LocalDateTime;
 
@@ -9,5 +9,6 @@ public record OcorrenciaRequestDTO(
         String endereco,
         Double latitude,
         Double longitude,
-        Long tipoOcorrenciaId) {
+        Long tipoOcorrenciaId,
+        Long usuarioId) {
 }

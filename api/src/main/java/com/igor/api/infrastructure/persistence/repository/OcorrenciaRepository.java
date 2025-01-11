@@ -1,4 +1,4 @@
-package com.igor.api.repositories;
+package com.igor.api.infrastructure.persistence.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;

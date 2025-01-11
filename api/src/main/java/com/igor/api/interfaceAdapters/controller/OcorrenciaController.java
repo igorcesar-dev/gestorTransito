@@ -1,4 +1,4 @@
-package com.igor.api.controller;
+package com.igor.api.interfaceAdapters.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,15 +12,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.igor.api.application.dto.ocorrencia.OcorrenciaComComentariosDTO;
+import com.igor.api.application.dto.ocorrencia.OcorrenciaRequestDTO;
+import com.igor.api.application.dto.tipoOcorrencia.TipoOcorrenciaCountDTO;
+import com.igor.api.application.service.OcorrenciaService;
+import com.igor.api.domain.comentario.Comentario;
 import com.igor.api.domain.ocorrencia.Ocorrencia;
-import com.igor.api.domain.ocorrencia.OcorrenciaComComentariosDTO;
-import com.igor.api.domain.ocorrencia.OcorrenciaRequestDTO;
-import com.igor.api.domain.tipoOcorrencia.TipoOcorrenciaCountDTO;
-import com.igor.api.service.OcorrenciaService;
 
 @RestController
 @RequestMapping("/api/ocorrencia")
@@ -30,8 +32,10 @@ public class OcorrenciaController {
     private OcorrenciaService ocorrenciaService;
 
     @PostMapping
-    public ResponseEntity<Ocorrencia> create(@RequestBody OcorrenciaRequestDTO body) {
-        Ocorrencia newOcorrencia = this.ocorrenciaService.createOcorrencia(body);
+    public ResponseEntity<Ocorrencia> create(@RequestBody OcorrenciaRequestDTO body,
+            @RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        Ocorrencia newOcorrencia = this.ocorrenciaService.createOcorrencia(body, token);
         return ResponseEntity.ok(newOcorrencia);
     }
 
@@ -54,19 +58,21 @@ public class OcorrenciaController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOcorrencia(@PathVariable Long id) {
-        ocorrenciaService.deleteOcorrenciaById(id);
+    public ResponseEntity<Void> deleteOcorrencia(@PathVariable Long id,
+            @RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        ocorrenciaService.deleteOcorrenciaById(id, token);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/search")
     public ResponseEntity<List<Ocorrencia>> searchOcorrencias(
-            @RequestParam(required = false) String tipo,
+            @RequestParam(required = false) Long idTipo,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataInicio,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataFim,
             @RequestParam(required = false) String localizacao,
             @RequestParam(required = false) String palavraChave) {
-        List<Ocorrencia> ocorrencias = ocorrenciaService.searchOcorrencias(tipo, dataInicio, dataFim, localizacao,
+        List<Ocorrencia> ocorrencias = ocorrenciaService.searchOcorrencias(idTipo, dataInicio, dataFim, localizacao,
                 palavraChave);
         return ResponseEntity.ok(ocorrencias);
     }

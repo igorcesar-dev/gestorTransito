@@ -1,9 +1,9 @@
-package com.igor.api.domain.ocorrencia;
+package com.igor.api.application.dto.ocorrencia;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.igor.api.domain.comentario.ComentarioDTO;
+import com.igor.api.application.dto.comentario.ComentarioDTO;
 
 public record OcorrenciaComComentariosDTO(
         Long id,
@@ -14,5 +14,6 @@ public record OcorrenciaComComentariosDTO(
         Double latitude,
         Double longitude,
         String tipoOcorrencia,
-        List<ComentarioDTO> comentarios) {
+        List<ComentarioDTO> comentarios
+        ) {
 }

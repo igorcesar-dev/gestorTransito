@@ -1,13 +1,15 @@
-package com.igor.api.domain.ocorrencia;
+package com.igor.api.infrastructure.persistence.specifications;
 
 import org.springframework.data.jpa.domain.Specification;
+
+import com.igor.api.domain.ocorrencia.Ocorrencia;
 
 import java.time.LocalDateTime;
 
 public class OcorrenciaSpecification {
 
-    public static Specification<Ocorrencia> tipoEqual(String tipo) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("tipoOcorrencia").get("descricao"), tipo);
+    public static Specification<Ocorrencia> tipoEqual(Long idTipo) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("tipoOcorrencia").get("id"), idTipo);
     }
 
     public static Specification<Ocorrencia> dataBetween(LocalDateTime dataInicio, LocalDateTime dataFim) {
@@ -20,8 +22,9 @@ public class OcorrenciaSpecification {
 
     public static Specification<Ocorrencia> palavraChaveInResumoOrDescricao(String palavraChave) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.or(
-            criteriaBuilder.like(root.get("resumo"), "%" + palavraChave + "%"),
-            criteriaBuilder.like(root.get("descricao"), "%" + palavraChave + "%")
-        );
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("resumo")), "%" + palavraChave.toLowerCase() + "%"),
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("descricao")),
+                        "%" + palavraChave.toLowerCase() + "%"));
     }
+
 }

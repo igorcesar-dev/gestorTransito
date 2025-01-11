@@ -1,27 +1,27 @@
-package com.igor.api.service;
+package com.igor.api.application.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
-import com.igor.api.domain.comentario.ComentarioDTO;
+import com.igor.api.application.dto.comentario.ComentarioDTO;
+import com.igor.api.application.dto.ocorrencia.OcorrenciaComComentariosDTO;
+import com.igor.api.application.dto.ocorrencia.OcorrenciaRequestDTO;
+import com.igor.api.application.dto.tipoOcorrencia.TipoOcorrenciaCountDTO;
+import com.igor.api.application.dto.usuario.UsuarioDTO;
 import com.igor.api.domain.ocorrencia.Ocorrencia;
-import com.igor.api.domain.ocorrencia.OcorrenciaComComentariosDTO;
-import com.igor.api.domain.ocorrencia.OcorrenciaRequestDTO;
-import com.igor.api.domain.ocorrencia.OcorrenciaSpecification;
 import com.igor.api.domain.tipoOcorrencia.TipoOcorrencia;
-import com.igor.api.domain.tipoOcorrencia.TipoOcorrenciaCountDTO;
-// import com.igor.api.domain.usuario.Usuario;
-import com.igor.api.repositories.OcorrenciaRepository;
-import com.igor.api.repositories.TipoOcorrenciaRepository;
-// import com.igor.api.repositories.UsuarioRepository;
+import com.igor.api.domain.usuario.Usuario;
+import com.igor.api.infrastructure.persistence.repository.OcorrenciaRepository;
+import com.igor.api.infrastructure.persistence.repository.TipoOcorrenciaRepository;
+import com.igor.api.infrastructure.persistence.repository.UsuarioRepository;
+import com.igor.api.infrastructure.persistence.specifications.OcorrenciaSpecification;
+import com.igor.api.infrastructure.security.TokenService;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -30,18 +30,20 @@ public class OcorrenciaService {
 
     private final OcorrenciaRepository ocorrenciaRepository;
     private final TipoOcorrenciaRepository tipoOcorrenciaRepository;
-    // private final UsuarioRepository usuarioRepository;
+    private final TokenService tokenService;
+    private final UsuarioRepository usuarioRepository;
 
     public OcorrenciaService(OcorrenciaRepository ocorrenciaRepository,
-            TipoOcorrenciaRepository tipoOcorrenciaRepository
-    /* UsuarioRepository usuarioRepository */) {
+            TipoOcorrenciaRepository tipoOcorrenciaRepository, TokenService tokenService,
+            UsuarioRepository usuarioRepository) {
         this.ocorrenciaRepository = ocorrenciaRepository;
         this.tipoOcorrenciaRepository = tipoOcorrenciaRepository;
-        // this.usuarioRepository = usuarioRepository;
+        this.tokenService = tokenService;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @Transactional
-    public Ocorrencia createOcorrencia(OcorrenciaRequestDTO data) {
+    public Ocorrencia createOcorrencia(OcorrenciaRequestDTO data, String token) {
         // Valida se a ocorrência ocorreu há mais de 2 dias
         if (data.dataHora() != null && data.dataHora().isBefore(LocalDateTime.now().minusDays(2))) {
             throw new IllegalArgumentException("Ocorrências não podem ser cadastradas se ocorreram há mais de 2 dias.");
@@ -52,13 +54,16 @@ public class OcorrenciaService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         "TipoOcorrencia não encontrado com ID: " + data.tipoOcorrenciaId()));
 
-        /*
-         * // Busca o Usuario pelo ID
-         * Usuario usuario = usuarioRepository.findById(data.usuarioId())
-         * .orElseThrow(() -> new
-         * EntityNotFoundException("Usuário não encontrado com ID: " +
-         * data.usuarioId()));
-         */
+        String loginUsuario = tokenService.validateToken(token);
+        if (loginUsuario.isEmpty()) {
+            throw new IllegalArgumentException("Token inválido ou usuário não autenticado.");
+        }
+
+        // Obtendo o UserDetails
+        UserDetails userDetails = usuarioRepository.findByLogin(loginUsuario);
+        if (!(userDetails instanceof Usuario usuario)) {
+            throw new IllegalArgumentException("Usuário não é uma instância válida.");
+        }
 
         // Criação da entidade Ocorrencia
         Ocorrencia newOcorrencia = new Ocorrencia();
@@ -69,7 +74,7 @@ public class OcorrenciaService {
         newOcorrencia.setLatitude(data.latitude());
         newOcorrencia.setLongitude(data.longitude());
         newOcorrencia.setTipoOcorrencia(tipoOcorrencia);
-        /* newOcorrencia.setUsuario(usuario); */
+        newOcorrencia.setUsuario(usuario);
 
         // Salvar a ocorrência no banco de dados
         return ocorrenciaRepository.save(newOcorrencia);
@@ -85,10 +90,15 @@ public class OcorrenciaService {
                 ocorrencia.getLatitude(),
                 ocorrencia.getLongitude(),
                 ocorrencia.getTipoOcorrencia() != null ? ocorrencia.getTipoOcorrencia().getDescricao() : null,
-                ocorrencia.getComentarios().stream().map(comentario -> new ComentarioDTO(
-                        comentario.getId(),
-                        comentario.getComentario(),
-                        comentario.getDataHora())).toList());
+                ocorrencia.getComentarios().stream().map(comentario -> {
+                    var usuario = comentario.getUsuario();
+                    var usuarioDTO = new UsuarioDTO(usuario.getId(), usuario.getNome(), usuario.getLogin());
+                    return new ComentarioDTO(
+                            comentario.getId(),
+                            comentario.getComentario(),
+                            comentario.getDataHora(),
+                            usuarioDTO);
+                }).toList());
     }
 
     // Busca todas as ocorrências com comentários
@@ -108,7 +118,6 @@ public class OcorrenciaService {
 
         return toDto(ocorrencia); // Converte a Ocorrencia em DTO com Comentários
     }
-
 
     // Atualiza uma ocorrência pelo id
     public Ocorrencia updateOcorrencia(Long id, OcorrenciaRequestDTO data) {
@@ -143,21 +152,33 @@ public class OcorrenciaService {
 
     // Deleta uma ocorrência pelo id
     @Transactional
-    public void deleteOcorrenciaById(Long id) {
-        if (!ocorrenciaRepository.existsById(id)) {
-            throw new EntityNotFoundException("Ocorrência não encontrada com ID: " + id);
+    public void deleteOcorrenciaById(Long id, String token) {
+        // Busca a ocorrência pelo ID
+        Ocorrencia ocorrencia = ocorrenciaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Ocorrência não encontrada com ID: " + id));
+
+        // Valida o token e obtém o login do usuário autenticado
+        String loginUsuario = tokenService.validateToken(token);
+        if (loginUsuario == null || loginUsuario.isEmpty()) {
+            throw new IllegalArgumentException("Token inválido ou usuário não autenticado.");
         }
+
+        // Verifica se o usuário que criou a ocorrência é o mesmo que está autenticado
+        if (!ocorrencia.getUsuario().getLogin().equals(loginUsuario)) {
+            throw new IllegalArgumentException("Somente o usuário que criou a ocorrência pode deletá-la.");
+        }
+
+        // Deleta a ocorrência
         ocorrenciaRepository.deleteById(id);
     }
 
-    // Pesquisa
     @Transactional(readOnly = true)
-    public List<Ocorrencia> searchOcorrencias(String tipo, LocalDateTime dataInicio, LocalDateTime dataFim,
+    public List<Ocorrencia> searchOcorrencias(Long idTipo, LocalDateTime dataInicio, LocalDateTime dataFim,
             String localizacao, String palavraChave) {
         Specification<Ocorrencia> specification = Specification.where(null);
 
-        if (tipo != null && !tipo.isEmpty()) {
-            specification = specification.and(OcorrenciaSpecification.tipoEqual(tipo));
+        if (idTipo != null) {
+            specification = specification.and(OcorrenciaSpecification.tipoEqual(idTipo));
         }
 
         if (dataInicio != null && dataFim != null) {

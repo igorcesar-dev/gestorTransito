@@ -3,8 +3,10 @@ package com.igor.api.domain.ocorrencia;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.igor.api.domain.comentario.Comentario;
 import com.igor.api.domain.tipoOcorrencia.TipoOcorrencia;
+import com.igor.api.domain.usuario.Usuario;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,6 +33,13 @@ public class Ocorrencia {
     @JoinColumn(name = "tipo_ocorrencia_id", nullable = false)
     private TipoOcorrencia tipoOcorrencia;
 
-    @OneToMany(mappedBy = "ocorrencia", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    // Na classe Ocorrencia
+    @OneToMany(mappedBy = "ocorrencia")
+    @JsonIgnore
     private List<Comentario> comentarios;
+
+    // Relacionamento com o Usuário
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false) // Adicionando a chave estrangeira para o Usuário
+    private Usuario usuario;
 }

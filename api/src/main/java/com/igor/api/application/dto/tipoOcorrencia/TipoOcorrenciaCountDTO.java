@@ -1,4 +1,4 @@
-package com.igor.api.domain.tipoOcorrencia;
+package com.igor.api.application.dto.tipoOcorrencia;
 
 public class TipoOcorrenciaCountDTO {
     private String tipo;
