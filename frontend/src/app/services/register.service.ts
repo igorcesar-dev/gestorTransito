@@ -9,15 +9,16 @@ interface RegisterResponse {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root' // torna o serviço disponível globalmente na aplicação
 })
 export class RegisterService {
 
+  // url da api
   apiUrl = environment.apiUrl;
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) { } // injeta o HttpClient para fazer as requisições HTTP
 
-  // Método para registrar o usuário
+  // método para registrar o usuário
   register(nome: string, login: string, senha: string) {
     return this.httpClient.post<RegisterResponse>(`${this.apiUrl}/register`, { nome, login, senha }).pipe(
       tap());

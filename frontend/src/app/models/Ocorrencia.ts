@@ -1,7 +1,12 @@
-export interface ComentarioListar {
-  id?: number;
-  texto?: string;
-  // Outros campos, se necessário
+export interface Comentario {
+  id: number;
+  texto: string;
+  dataHora: string;
+  usuario: {
+    id: number;
+    nome: string;
+    login: string;
+  };
 }
 
 export interface Ocorrencia {
@@ -13,5 +18,5 @@ export interface Ocorrencia {
   latitude?: number;
   longitude?: number;
   tipoOcorrencia?: string;
-  comentarios?: ComentarioListar[];
+  comentarios?: Comentario[];
 }

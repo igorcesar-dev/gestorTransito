@@ -1,0 +1,12 @@
+<div class="mb-3">
+  <label [for]="inputName" class="form-label">{{ label }}</label>
+  <select
+    [id]="inputName"
+    class="form-control"
+    [value]="value"
+    (change)="onSelectChange($event)"
+  >
+    <option value="" disabled>Selecione uma opção</option>
+    <option *ngFor="let option of options" [value]="option.value">{{ option.label }}</option>
+  </select>
+</div>

@@ -6,7 +6,7 @@ import com.igor.api.application.dto.usuario.UsuarioDTO;
 
 public record ComentarioDTO(
         Long id,
-        String texto,
+        String comentario,
         LocalDateTime dataHora,
         UsuarioDTO usuario) {
 }

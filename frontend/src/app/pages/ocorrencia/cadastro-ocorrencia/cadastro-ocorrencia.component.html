@@ -1,0 +1,79 @@
+<app-default-register-layout title="Cadastrar nova ocorrêcia" class="w-50">
+  <form
+    [formGroup]="registerUsuarioForm"
+    (ngSubmit)="submit()"
+    #formDir="ngForm"
+  >
+    <!-- input de resumo -->
+    <app-primary-input
+      formControlName="resumo"
+      inputName="resumo"
+      type="text"
+      label="Resumo"
+      placeholder="Exemplo: Ocorrência de acidente"
+    >
+    </app-primary-input>
+
+    <!-- input de descrição -->
+    <app-primary-input
+      formControlName="descricao"
+      inputName="descricao"
+      type="text"
+      label="Descrição"
+      placeholder="Exemplo: Ocorrência de acidente de carro"
+    >
+    </app-primary-input>
+
+    <!-- input de data e hora -->
+    <app-primary-input
+      formControlName="dataHora"
+      inputName="dataHora"
+      type="datetime-local"
+      label="Data e Hora"
+    >
+    </app-primary-input>
+
+    <!-- input de endereço -->
+    <app-primary-input
+      formControlName="endereco"
+      inputName="endereco"
+      type="text"
+      label="Endereço"
+      placeholder="Exemplo: Av. Brumado, 123, Vitória da Conquista, BA"
+    >
+    </app-primary-input>
+
+    <!-- select de tipo de ocorrência -->
+    <app-primary-select
+      formControlName="tipoOcorrenciaId"
+      label="Selecione um Tipo de Ocorrência"
+      inputName="tipoOcorrenciaId"
+      [options]="tiposOcorrencia"
+    ></app-primary-select>
+
+    <!-- input de latitude -->
+    <app-primary-input
+      formControlName="latitude"
+      inputName="latitude"
+      type="text"
+      label="Latitude"
+      placeholder="Exemplo: -12.345678"
+    >
+    </app-primary-input>
+
+    <!-- input de longitude -->
+    <app-primary-input
+      formControlName="longitude"
+      inputName="longitude"
+      type="text"
+      label="Longitude"
+      placeholder="Exemplo: -12.345678"
+    >
+    </app-primary-input>
+
+    <!-- Botão de ação -->
+    <button class="btn btn-primary w-25" type="submit">
+      Salvar
+    </button>
+  </form>
+</app-default-register-layout>

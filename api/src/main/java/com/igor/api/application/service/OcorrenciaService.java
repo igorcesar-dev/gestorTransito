@@ -52,7 +52,7 @@ public class OcorrenciaService {
         // Busca o TipoOcorrencia pelo ID
         TipoOcorrencia tipoOcorrencia = tipoOcorrenciaRepository.findById(data.tipoOcorrenciaId())
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "TipoOcorrencia não encontrado com ID: " + data.tipoOcorrenciaId()));
+                        "Tipo de ocorrência não encontrado com ID: " + data.tipoOcorrenciaId()));
 
         String loginUsuario = tokenService.validateToken(token);
         if (loginUsuario.isEmpty()) {

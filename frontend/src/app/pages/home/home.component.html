@@ -1,8 +1,6 @@
 <div class="box-ocorrencias mt-5">
-
-
   <div class="box-header">
-    <!-- Barra de pesquisa -->
+    <!-- barra de pesquisa -->
     <div class="search-bar d-flex justify-content-between">
       <div class="input-group mb-3 w-50">
         <input
@@ -21,11 +19,11 @@
         </button>
       </div>
       <div class="">
-        <button class="btn btn-primary">Nova ocorrência</button>
+        <button class="btn btn-primary" (click)="cadastrarOcorrencia()">Nova ocorrência</button>
       </div>
     </div>
 
-    <!-- Filtros -->
+    <!-- filtros -->
     <div class="d-flex flex-wrap mt-2">
       <div class="me-2">
         <div class="input-group">
@@ -67,18 +65,18 @@
     </div>
   </div>
 
-  <!-- Exibe as ocorrências na tabela -->
+  <!-- exibe as ocorrências na tabela -->
   <div *ngIf="ocorrencias && ocorrencias.length > 0; else noData">
     <table class="table table-hover table-bordered mt-4">
       <thead class="bg-secondary">
         <tr>
-          <th>Id</th>
-          <th>Resumo</th>
-          <th>Descrição</th>
-          <th>Data</th>
+          <th class="col-1">Id</th>
+          <th class="col-2">Resumo</th>
+          <th class="col-2">Descrição</th>
+          <th class="col-2">Data</th>
           <th>Endereço</th>
           <th>Tipo</th>
-          <th>Comentários</th>
+          <th class="col-2">Ações</th>
         </tr>
       </thead>
       <tbody>
@@ -90,15 +88,15 @@
           <td>{{ ocorrencia.endereco }}</td>
           <td>{{ ocorrencia.tipoOcorrencia }}</td>
           <td>
-            <button class="btn btn-warning mx-1">Editar</button>
-            <button class="btn btn-danger mx-1">Excluir</button>
+            <button class="btn btn-warning mx-1"[routerLink]="['/detalhe-ocorrencia', ocorrencia.id]">Detalhes</button>
+            <button class="btn btn-danger mx-1" (click)="delete(ocorrencia.id)">Excluir</button>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- Quando não houver ocorrências -->
+  <!-- quando não houver ocorrências -->
   <ng-template #noData>
     <div class="d-flex justify-content-center align-items-center mt-5">
       <div class="text-center mt-5">

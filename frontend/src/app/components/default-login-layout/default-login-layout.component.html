@@ -1,18 +1,19 @@
 <div class="container d-flex justify-content-center align-items-center vh-100">
   <div class="card shadow-lg p-4" style="max-width: 400px; width: 100%;">
+    <!-- título e subtítulo da página -->
     <h1 class="text-center mb-3">{{ title }}</h1>
     <p class="text-center text-muted mb-4">{{ subtitle }}</p>
 
+    <!-- conteúdo dinâmico -->
     <ng-content></ng-content>
-
+    
     <button type="submit" class="btn btn-primary w-100" (click)="submit()">
       {{ primaryButton }}
     </button>
 
+    <!-- Link para /registar-->
     <div class="text-center mt-3">
-      <a href="/registrar" class="text-decoration-none">{{
-        secondaryButton
-      }}</a>
+      <a href="/registrar" class="text-decoration-none">{{ secondaryButton }}</a>
     </div>
   </div>
 </div>

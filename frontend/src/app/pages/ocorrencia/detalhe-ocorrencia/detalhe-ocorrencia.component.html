@@ -1,0 +1,55 @@
+<div *ngIf="ocorrencia" class="card shadow-sm p-4 mb-4 container mt-4">
+  <!-- Título da ocorrência -->
+  <h2 class="mb-3">{{ ocorrencia.resumo }}</h2>
+
+  <!-- Informações básicas -->
+  <div class="mb-4">
+    <p><strong>Descrição:</strong> {{ ocorrencia.descricao }}</p>
+    <p>
+      <strong>Data e Hora:</strong> {{ ocorrencia.dataHora | date : "short" }}
+    </p>
+    <p><strong>Endereço:</strong> {{ ocorrencia.endereco }}</p>
+  </div>
+
+  <hr />
+  <!-- Formulário para Adicionar Comentário -->
+  <div *ngIf="isAuthenticated; else notLoggedIn" class="mb-4">
+    <div class="form-group">
+      <textarea
+        [(ngModel)]="novoComentario"
+        class="form-control"
+        placeholder="Digite seu comentário aqui"
+        rows="3"
+      ></textarea>
+    </div>
+    <button (click)="adicionarComentario()" class="btn btn-primary mt-2">
+      Adicionar Comentário
+    </button>
+  </div>
+  <hr />
+  <!-- Lista de Comentários -->
+  <h3 class="mb-3">Comentários</h3>
+  <ul class="list-group mb-4">
+    <li
+      *ngFor="let comentario of ocorrencia.comentarios"
+      class="list-group-item"
+    >
+      <p class="mb-1">
+        <strong>{{
+          comentario.usuario?.nome || "Usuário desconhecido"
+        }}</strong>
+      </p>
+      <p class="mb-1">{{ comentario.comentario }}</p>
+      <p class="text-muted mb-0">
+        <em>{{ comentario.dataHora | date : "short" }}</em>
+      </p>
+    </li>
+  </ul>
+
+  <!-- Mensagem para Usuários Não Autenticados -->
+  <ng-template #notLoggedIn>
+    <div class="alert alert-warning" role="alert">
+      Você precisa estar autenticado para comentar.
+    </div>
+  </ng-template>
+</div>
