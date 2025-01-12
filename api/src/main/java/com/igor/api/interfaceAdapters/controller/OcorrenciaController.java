@@ -21,7 +21,6 @@ import com.igor.api.application.dto.ocorrencia.OcorrenciaComComentariosDTO;
 import com.igor.api.application.dto.ocorrencia.OcorrenciaRequestDTO;
 import com.igor.api.application.dto.tipoOcorrencia.TipoOcorrenciaCountDTO;
 import com.igor.api.application.service.OcorrenciaService;
-import com.igor.api.domain.comentario.Comentario;
 import com.igor.api.domain.ocorrencia.Ocorrencia;
 
 @RestController
