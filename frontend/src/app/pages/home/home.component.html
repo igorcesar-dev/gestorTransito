@@ -1,0 +1,109 @@
+<div class="box-ocorrencias mt-5">
+
+
+  <div class="box-header">
+    <!-- Barra de pesquisa -->
+    <div class="search-bar d-flex justify-content-between">
+      <div class="input-group mb-3 w-50">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Pesquisar por palavra-chave de resumo ou descrição"
+          [formControl]="palavraChave"
+          (keydown.enter)="search()"
+        />
+        <button
+          class="btn btn-outline-secondary"
+          type="button"
+          (click)="search()"
+        >
+          Pesquisar
+        </button>
+      </div>
+      <div class="">
+        <button class="btn btn-primary">Nova ocorrência</button>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="d-flex flex-wrap mt-2">
+      <div class="me-2">
+        <div class="input-group">
+          <span class="input-group-text">Tipo</span>
+          <select
+            class="form-select"
+            [(ngModel)]="idTipo"
+            (change)="searchByTipo()"
+          >
+            <option [ngValue]="null" disabled>Selecione um tipo</option>
+            <option
+              *ngFor="let tipoOcorrencia of tipoOcorrencias"
+              [value]="tipoOcorrencia.id"
+            >
+              {{ tipoOcorrencia.descricao }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="me-2">
+        <div class="input-group">
+          <span class="input-group-text">Data Início</span>
+          <input type="date" class="form-control" />
+        </div>
+      </div>
+      <div class="me-2">
+        <div class="input-group">
+          <span class="input-group-text">Data Fim</span>
+          <input type="date" class="form-control" />
+        </div>
+      </div>
+      <div class="me-2 w-25">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Filtrar por localização (ex.: cidade, bairro)"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Exibe as ocorrências na tabela -->
+  <div *ngIf="ocorrencias && ocorrencias.length > 0; else noData">
+    <table class="table table-hover table-bordered mt-4">
+      <thead class="bg-secondary">
+        <tr>
+          <th>Id</th>
+          <th>Resumo</th>
+          <th>Descrição</th>
+          <th>Data</th>
+          <th>Endereço</th>
+          <th>Tipo</th>
+          <th>Comentários</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ocorrencia of ocorrencias">
+          <td>{{ ocorrencia.id }}</td>
+          <td>{{ ocorrencia.resumo }}</td>
+          <td>{{ ocorrencia.descricao }}</td>
+          <td>{{ ocorrencia.dataHora }}</td>
+          <td>{{ ocorrencia.endereco }}</td>
+          <td>{{ ocorrencia.tipoOcorrencia }}</td>
+          <td>
+            <button class="btn btn-warning mx-1">Editar</button>
+            <button class="btn btn-danger mx-1">Excluir</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Quando não houver ocorrências -->
+  <ng-template #noData>
+    <div class="d-flex justify-content-center align-items-center mt-5">
+      <div class="text-center mt-5">
+        <p class="text-muted fs-5">Nenhuma ocorrência encontrada.</p>
+      </div>
+    </div>
+  </ng-template>
+</div>
