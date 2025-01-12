@@ -20,7 +20,7 @@ import com.igor.api.infrastructure.security.TokenService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping("api")
 public class AuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;

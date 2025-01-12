@@ -1,0 +1,9 @@
+<div class="mb-3">
+  <label [for]="inputName" class="form-label">{{ label }}</label>
+  <input
+    [type]="type"
+    class="form-control"
+    [placeholder]="placeholder"
+    [value]="value"
+    (input)="onInput($event)" />
+</div>

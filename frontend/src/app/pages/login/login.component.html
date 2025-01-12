@@ -3,47 +3,25 @@
   subtitle="Realize o login para continuar"
   primaryButton="Entrar"
   secondaryButton="Criar Conta"
+  (submit)="submit()"
 >
   <form [formGroup]="loginForm">
-    <div class="mb-3">
-      <label for="email" class="form-label">{{ emailLabel }}</label>
-      <input
-        type="email"
-        id="email"
-        formControlName="email"
-        class="form-control"
-        [placeholder]="emailPlaceholder"
-        required
-      />
-      <div
-        *ngIf="
-          loginForm.get('email')?.invalid && loginForm.get('email')?.touched
-        "
-        class="text-danger mt-1"
-      >
-        {{ emailError }}
-      </div>
-    </div>
+    <app-primary-input
+      formControlName="login"
+      inputName="login"
+      type="text"
+      label="Login"
+      placeholder="Digite seu Login"
+    >
+    </app-primary-input>
 
-    <div class="mb-3">
-      <label for="password" class="form-label">{{ passwordLabel }}</label>
-      <input
-        type="password"
-        id="password"
-        formControlName="password"
-        class="form-control"
-        [placeholder]="passwordPlaceholder"
-        required
-      />
-      <div
-        *ngIf="
-          loginForm.get('password')?.invalid &&
-          loginForm.get('password')?.touched
-        "
-        class="text-danger mt-1"
-      >
-        {{ passwordError }}
-      </div>
-    </div>
+    <app-primary-input
+      formControlName="password"
+      inputName="password"
+      type="password"
+      label="Senha"
+      placeholder="Digite sua senha"
+    >
+    </app-primary-input>
   </form>
 </app-default-login-layout>
