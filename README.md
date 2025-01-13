@@ -54,33 +54,99 @@ O projeto é dividido em duas partes principais:
   - Consumo de APIs RESTful
 ---
 
-## Requisitos
+## API Spring Boot - Gestor Trânsito
 
-Certifique-se de ter instalado:
+### **1. Introdução**
+Este repositório contém o código-fonte da API do projeto "Gestor Trânsito". Esta API foi desenvolvida com **Spring Boot 3** e **Java 17+**. O objetivo é gerenciar ocorrências de trânsito, oferecendo funcionalidades de criação, visualização e exclusão de ocorrências, além de filtros e dashboards.
 
+---
+
+### **2. Tecnologias Utilizadas**
 - **Java 17+**
-- **Node.js 18+** e **npm**
+- **Spring Boot 3.x**
+- **Spring Data JPA**
 - **PostgreSQL**
-- **Maven**
+- **Lombok**
+- **Spring security**
+- **JWT**
 
-### 1. Banco de Dados
-* Crie um banco de dados no PostgreSQL chamado `gestor_transito`.
-* Configure as credenciais no arquivo `application.properties` (diretório: `src/main/resources/`) da API:
+---
+
+### **3. Instalação e Configuração**
+
+#### **3.1. Clone o Repositório**
+```bash
+git clone https://github.com/igorcesar-dev/gestorTransito.git
+cd gestorTransito/api
+```
+
+#### **3.2. Configure o Banco de Dados**
+1. Crie um banco de dados no PostgreSQL:
+   ```sql
+   CREATE DATABASE gestor_transito;
+   ```
+2. Atualize o arquivo `application.properties` com suas credenciais:
    ```properties
    spring.datasource.url=jdbc:postgresql://localhost:5432/gestor_transito
    spring.datasource.username=seu_usuario
    spring.datasource.password=sua_senha
    spring.flyway.enabled=true
+   ```
 
+#### **3.3. Execute a Aplicação**
+Compile e inicie a aplicação com o Maven Wrapper:
+```bash
+./mvnw spring-boot:run
+```
+A API estará acessível em `http://localhost:8080`.
 
-## Documentação da API Spring boot 3
+---
 
-Acesse o link para verificar todos os endpoints disponíveis na API https://documenter.getpostman.com/view/22348567/2sAYQWKtpd
+### **4. Endpoints da api**
+A documentação completa dos endpoints está disponível via Swagger em `https://documenter.getpostman.com/view/22348567/2sAYQWKtpd`
 
+#### **4.1. Usuário**
+- **POST /api/v1/usuarios/register** - Cadastro de usuário.
+- **POST /api/v1/usuarios/login** - Autenticação de usuário.
 
-## Frontend Angular - Documentação
+#### **4.2. Ocorrências**
+- **GET /api/v1/ocorrencias** - Lista todas as ocorrências.
+- **POST /api/v1/ocorrencias** - Cria uma nova ocorrência.
+- **GET /api/v1/ocorrencias/{id}** - Detalhes de uma ocorrência.
 
-### 1. Pré-requisitos
+#### **4.3. Tipos de Ocorrência**
+- **GET /api/v1/tipos-ocorrencia** - Lista todos os tipos de ocorrência.
+
+---
+
+### **5. Estrutura do Projeto**
+A estrutura do projeto segue os princípios da arquitetura hexagonal:
+
+```plaintext
+src/
+├── main/
+│   ├── java/com/igor/api/
+│   │   ├── application/          # Camada de aplicação (serviços, DTOs, ports)
+│   │   │   ├── dto/              # Transferência de dados (DTOs)
+│   │   │   └── service/          # Lógica de aplicação
+│   │   ├── domain/               # Camada de domínio (entidades e regras de negócio)
+│   │   ├── infrastructure/       # Infraestrutura (configurações, persistência, segurança)
+│   │   │   ├── config/           # Configurações gerais
+│   │   │   ├── persistence/      # Repositórios e especificações
+│   │   │   └── security/         # Configurações de segurança
+│   │   ├── interfaceAdapters/    # Adaptadores para comunicação externa (controllers)
+│   │   └── ApiApplication.java   # Classe principal
+│   └── resources/
+│       ├── application.properties # Configurações do ambiente
+│       └── db/migration/          # Scripts de migração (Flyway)
+└── test/                          # Testes unitários e de integração
+```
+
+---
+
+## **Frontend Angular - Documentação**
+
+### **1. Pré-requisitos**
 Certifique-se de ter os seguintes itens instalados no seu ambiente:
 - **Node.js** (versão mínima: 18)
 - **Angular CLI** (versão mínima: 17)
@@ -88,7 +154,7 @@ Certifique-se de ter os seguintes itens instalados no seu ambiente:
 
 ---
 
-### 2. Instalação
+### **2. Instalação**
 
 1. Clone este repositório:
    ```bash
@@ -108,7 +174,7 @@ Certifique-se de ter os seguintes itens instalados no seu ambiente:
    O projeto estará acessível em `http://localhost:4200`.
 
 ---
-### 3. Estrutura do Projeto
+### **3. Estrutura do Projeto**
 Abaixo está a estrutura principal das pastas do projeto:
 
 ```plaintext
@@ -141,7 +207,7 @@ src/
 
 ---
 
-### 4. Configurações de Ambiente
+### **4. Configurações de Ambiente**
 As configurações de ambiente estão localizadas na pasta `src/environments`.
 
 - `environment.ts`: Configurações para desenvolvimento.
@@ -149,7 +215,7 @@ As configurações de ambiente estão localizadas na pasta `src/environments`.
 
 ---
 
-### 5. Componentes Principais
+### **5. Componentes Principais**
 
 - **DefaultLoginLayoutComponent**
   - **Local:** `src/app/components/default-login-layout/`
@@ -165,7 +231,7 @@ As configurações de ambiente estão localizadas na pasta `src/environments`.
 
 ---
 
-### 6. Serviços
+### **6. Serviços**
 
 - **AuthService**
   - **Local:** `src/app/services/auth.service.ts`
@@ -189,7 +255,7 @@ As configurações de ambiente estão localizadas na pasta `src/environments`.
 
 ---
 
-### 7. Rotas
+### **7. Rotas**
 As rotas do aplicativo estão configuradas no arquivo `app.routes.ts`.
 
 ### **Exemplo de Configuração de Rotas**
@@ -220,7 +286,7 @@ export const routes: Routes = [
 
 ---
 
-### 8. Scripts Disponíveis
+### **8. Scripts Disponíveis**
 Os scripts disponíveis estão configurados no arquivo `package.json`.
 
 ### **Principais Scripts**
