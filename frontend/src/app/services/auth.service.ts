@@ -38,18 +38,6 @@ export class AuthService {
     return this.loginSubject.asObservable(); // Permite que a interface reaja a mudanças
   }
 
-  // Método para fazer login
-  login(token: string, login: string, nome: string): void {
-    if (this.isBrowser()) {
-      sessionStorage.setItem('auth-token', token);
-      sessionStorage.setItem('login', login);
-      sessionStorage.setItem('nome', nome);
-    }
-    this.authTokenSubject.next(token);
-    this.loginSubject.next(login);
-    this.usernameSubject.next(nome);
-  }
-
   // Método para fazer logout
   logout(): void {
     if (this.isBrowser()) {
