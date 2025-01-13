@@ -108,7 +108,7 @@ Certifique-se de ter os seguintes itens instalados no seu ambiente:
    O projeto estará acessível em `http://localhost:4200`.
 
 ---
-### 4. Estrutura do Projeto
+### 3. Estrutura do Projeto
 Abaixo está a estrutura principal das pastas do projeto:
 
 ```plaintext
