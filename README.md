@@ -105,18 +105,6 @@ A API estará acessível em `http://localhost:8080`.
 ### **4. Endpoints da api**
 A documentação completa dos endpoints está disponível via Swagger em `https://documenter.getpostman.com/view/22348567/2sAYQWKtpd`
 
-#### **4.1. Usuário**
-- **POST /api/v1/usuarios/register** - Cadastro de usuário.
-- **POST /api/v1/usuarios/login** - Autenticação de usuário.
-
-#### **4.2. Ocorrências**
-- **GET /api/v1/ocorrencias** - Lista todas as ocorrências.
-- **POST /api/v1/ocorrencias** - Cria uma nova ocorrência.
-- **GET /api/v1/ocorrencias/{id}** - Detalhes de uma ocorrência.
-
-#### **4.3. Tipos de Ocorrência**
-- **GET /api/v1/tipos-ocorrencia** - Lista todos os tipos de ocorrência.
-
 ---
 
 ### **5. Estrutura do Projeto**
