@@ -35,7 +35,7 @@ export class CadastroOcorrenciaComponent implements OnInit {
   tiposOcorrencia: { label: string; value: string }[] = []; // lista de tipos de ocorrências a serem carregadas no select
 
   constructor(
-    private tipoOcorrenciaService: TipoOcorrenciaService, 
+    private tipoOcorrenciaService: TipoOcorrenciaService,
     private ocorrenciaService: OcorrenciaService,
     private toastService: ToastrService,
   ) { }
